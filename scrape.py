@@ -190,8 +190,7 @@ def find_poem(poem_soup, url):
             translator = find_span_beginning_remove(poem_soup,
                                                     'c-txt_attribution',
                                                     'translated by')
-            source = find_span_beginning_remove(poem_soup, 'c-txt_note',
-                                                'source:').strip()
+            source = find_span_beginning_remove(poem_soup, 'c-txt_note', 'source:')
             year = None
             if source:
                 year = find_poem_year(source)
@@ -282,9 +281,7 @@ def find_span_beginning_remove(soup, span_class, pattern):
     """
     result = find_span_element(soup, span_class, pattern)
     if result:
-        result = result[len(pattern):]
-        result = result.lstrip(WHITESPACE)
-        result = result.rstrip(WHITESPACE)
+        result = result[len(pattern):].strip()
         return result
     return None
 

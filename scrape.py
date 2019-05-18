@@ -61,6 +61,7 @@ def main():
     cursor = conn.cursor()
 
     if (args.fresh or args.full_run)and os.path.exists(DATABASE):
+        drop_tables(cursor)
         os.remove(DATABASE)
         print(f'deleted {DATABASE}')
 
@@ -343,10 +344,8 @@ def create_tables(cursor):
 
 
 def drop_tables(cursor):
-    cursor.execute(CREATE_POETS)
-    cursor.execute(CREATE_POEMS)
-    cursor.execute(CREATE_LINES)
-    cursor.execute(CREATE_TAGS)
+    for table in ['POETS', 'POEMS', 'LINES', 'TAGS']:
+        cursor.execute(f'DROP TABLE IF EXISTS {table}')
 
 
 def write_poem(poem, poet_id, cursor, tag_csv=None):

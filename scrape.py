@@ -56,8 +56,7 @@ def main():
 
     args = parser.parse_args()
 
-
-    if (args.fresh or args.full_run)and os.path.exists(DATABASE):
+    if (args.fresh or args.full_run) and os.path.exists(DATABASE):
         conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
         cursor = conn.cursor()
         drop_tables(cursor)

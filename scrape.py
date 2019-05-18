@@ -51,7 +51,7 @@ def main():
     parser.add_argument("--fresh", action="store_true", help="clear the entire db before scraping")
     parser.add_argument("--batch", action="store_true", help="scrape batch poems by authors in poets.txt")
     parser.add_argument("--full_run", action="store_true", help="delete all and batch collections and poets")
-    parser.add_argument("-c", "--collection", type=str, help="parse a collection")
+    parser.add_argument("-c", "--collection", action="store_true", help="parse a collection")
     parser.add_argument("-t", "--tag", type=str, help="tag(s) to add to this collection, csv")
 
     args = parser.parse_args()
@@ -78,12 +78,13 @@ def main():
         if args.batch:
             batch_collections(cursor)
         else:
-            add_poem_collection(args.collection, args.tag, cursor)
+            col_id = input('enter collection id')
+            add_poem_collection(col_id, args.tag, cursor)
     else:
         if args.batch:
             batch_run(cursor)
         else:
-            poet = input('Enter a poet or RET to read poets.txt: ')
+            poet = input('enter poet name')
             add_poet_poems(poet, cursor)
 
     conn.commit()

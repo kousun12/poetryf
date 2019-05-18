@@ -1,7 +1,4 @@
 """
-PoetryFoundation Scraper. Edited from the original by Eric Li
-Author: Jared Moore
-
 Web scraper that scrapes a poets' poems from the PoetryFoundation
 website into a sqlite database
 """

@@ -32,7 +32,7 @@ def main():
     parser.add_argument("--all", help="parse a collection", action="store_true")
     parser.add_argument("-t", "--tag", type=str, help="tags to search over, comma-separated")
     parser.add_argument("-a", "--author", type=str, help="authors to search over, comma-separated")
-    parser.add_argument("-o", "--out", type=str, help="output name", default="output.txt")
+    parser.add_argument("-o", "--out", type=str, help="output name", default="out/output.txt")
 
     args = parser.parse_args()
     if args.all:

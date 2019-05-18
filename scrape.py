@@ -56,6 +56,7 @@ def main():
 
     if args.fresh and os.path.exists(DATABASE):
         os.remove(DATABASE)
+        print(f'deleted {DATABASE}')
 
     conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
     cursor = conn.cursor()

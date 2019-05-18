@@ -13,6 +13,7 @@ import urllib.request
 from html import unescape
 import argparse
 import os
+import re
 
 from bs4 import BeautifulSoup
 
@@ -23,6 +24,7 @@ POET_URL = "https://www.poetryfoundation.org/poets/%s#about"
 COLLECTION_URL = "https://www.poetryfoundation.org/collections/%s"
 
 POETS = "poets.txt"
+COLLECTIONS = "collections.txt"
 
 INSERT_LINE = """INSERT INTO LINES (lid, pid, poem_line) VALUES (?, ?, ?);"""
 INSERT_TAG = """INSERT INTO TAGS (pid, name) VALUES (?, ?);"""
@@ -49,23 +51,31 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fresh", action="store_true", help="clear the entire db before scraping")
     parser.add_argument("--batch", action="store_true", help="scrape batch poems by authors in poets.txt")
+    parser.add_argument("--full_run", action="store_true", help="delete all and batch collections and poets")
     parser.add_argument("-c", "--collection", type=str, help="parse a collection")
-    parser.add_argument("-t", "--tag", type=str, help="tag to add to this collection")
+    parser.add_argument("-t", "--tag", type=str, help="tag(s) to add to this collection, csv")
 
     args = parser.parse_args()
 
-    if args.fresh and os.path.exists(DATABASE):
+    conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
+    cursor = conn.cursor()
+
+    if (args.fresh or args.full_run)and os.path.exists(DATABASE):
         os.remove(DATABASE)
         print(f'deleted {DATABASE}')
 
-    conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
-    cursor = conn.cursor()
     create_tables(cursor)
 
-    if args.collection:
+    if args.full_run:
+        batch_run(cursor)
+        batch_collections(cursor)
+    elif args.collection:
         if not args.tag:
             raise Exception("You should tag collections")
-        add_poem_collection(args.collection, args.tag, cursor)
+        if args.batch:
+            batch_collections(cursor)
+        else:
+            add_poem_collection(args.collection, args.tag, cursor)
     else:
         if args.batch:
             batch_run(cursor)
@@ -86,6 +96,14 @@ def batch_run(cursor):
         for poet in poets:
             if not poet.startswith('#'):
                 add_poet_poems(poet, cursor)
+
+
+def batch_collections(cursor):
+    with open(COLLECTIONS, "r") as cols_file:
+        cols = cols_file.readlines()
+        for line in cols:
+            match = re.search("(?P<id>\\d+):(?P<tags>.*)", line)
+            add_poem_collection(match.group('id'), match.group('tags'), cursor)
 
 
 def poet_name_to_dashes(name):
@@ -133,7 +151,7 @@ def add_poet_poems(poet_name, cursor):
             write_poem(poem, poet_id, cursor)
 
 
-def add_poem_collection(collection_id, tag, cursor):
+def add_poem_collection(collection_id, tag_csv, cursor):
     """
     Adds all of the poems in a collection
     """
@@ -159,7 +177,7 @@ def add_poem_collection(collection_id, tag, cursor):
 
         if poem:
             print("done")
-            write_poem(poem, poet_id, cursor, tag)
+            write_poem(poem, poet_id, cursor, tag_csv)
 
 
 ### Begin scraping functions
@@ -324,7 +342,14 @@ def create_tables(cursor):
     cursor.execute(CREATE_TAGS)
 
 
-def write_poem(poem, poet_id, cursor, tag=None):
+def drop_tables(cursor):
+    cursor.execute(CREATE_POETS)
+    cursor.execute(CREATE_POEMS)
+    cursor.execute(CREATE_LINES)
+    cursor.execute(CREATE_TAGS)
+
+
+def write_poem(poem, poet_id, cursor, tag_csv=None):
     """
     Writes poem to cursor
     """
@@ -338,8 +363,10 @@ def write_poem(poem, poet_id, cursor, tag=None):
         line = poem.lines[lid]
         add_line(lid, poem_id, line, cursor)
 
-    if tag:
-        add_tag(poem_id, tag, cursor)
+    if tag_csv:
+        tags = filter(None, [f'"{x.strip()}"' for x in tag_csv.split(',')])
+        for name in tags:
+            add_tag(poem_id, name, cursor)
 
 
 def poet_exists(poet_name, cursor):
@@ -428,5 +455,5 @@ def _debug_single(url):
 
 
 if __name__ == '__main__':
-    # _debug_single('https://www.poetryfoundation.org/poetrymagazine/poems/56625/visitors-from-abroad')
-    main()
+    _debug_single('https://www.poetryfoundation.org/poetrymagazine/poems/56625/visitors-from-abroad')
+    # main()

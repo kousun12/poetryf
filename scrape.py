@@ -5,7 +5,6 @@ website into a sqlite database
 
 from __future__ import print_function
 
-import re
 import sqlite3
 import urllib.error
 import urllib.parse
@@ -57,14 +56,18 @@ def main():
 
     args = parser.parse_args()
 
-    conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
-    cursor = conn.cursor()
 
     if (args.fresh or args.full_run)and os.path.exists(DATABASE):
+        conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
+        cursor = conn.cursor()
         drop_tables(cursor)
         os.remove(DATABASE)
         print(f'deleted {DATABASE}')
+        conn.commit()
+        cursor.close()
 
+    conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
+    cursor = conn.cursor()
     create_tables(cursor)
 
     if args.full_run:

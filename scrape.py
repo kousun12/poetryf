@@ -73,11 +73,11 @@ def main():
         batch_run(cursor)
         batch_collections(cursor)
     elif args.collection:
-        if not args.tag:
-            raise Exception("You should tag collections")
         if args.batch:
             batch_collections(cursor)
         else:
+            if not args.tag:
+                raise Exception("You should tag collections")
             col_id = input('enter collection id')
             add_poem_collection(col_id, args.tag, cursor)
     else:

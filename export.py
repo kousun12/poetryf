@@ -43,7 +43,6 @@ def main():
     write_poems(args.out, poems)
     conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
     cursor = conn.cursor()
-
     cursor.close()
 
 

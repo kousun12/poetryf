@@ -455,5 +455,5 @@ def _debug_single(url):
 
 
 if __name__ == '__main__':
-    _debug_single('https://www.poetryfoundation.org/poetrymagazine/poems/56625/visitors-from-abroad')
-    # main()
+    # _debug_single('https://www.poetryfoundation.org/poetrymagazine/poems/56625/visitors-from-abroad')
+    main()

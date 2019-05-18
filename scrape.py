@@ -12,6 +12,7 @@ import urllib.parse
 import urllib.request
 from html import unescape
 import argparse
+import os
 
 from bs4 import BeautifulSoup
 
@@ -46,10 +47,14 @@ def main():
     Main function for running from command line
     """
     parser = argparse.ArgumentParser()
+    parser.add_argument("--fresh", type=str, help="clear the entire db before scraping")
     parser.add_argument("-c", "--collection", type=str, help="parse a collection")
     parser.add_argument("-t", "--tag", type=str, help="tag to add to this collection")
 
     args = parser.parse_args()
+
+    if args.fresh and os.path.exists(DATABASE):
+        os.remove(DATABASE)
 
     conn = sqlite3.connect(DATABASE, isolation_level=None)  # auto commit
     cursor = conn.cursor()
@@ -258,7 +263,7 @@ def find_poem_lines(soup):
     Returns the lines of the poem as parsed from soup
     """
     poemContent = soup.find('div', {'class': 'o-poem'})
-    poemLines = poemContent.findAll('div')
+    poemLines = poemContent.findAll('div', recursive=False)
 
     lines = []
     for line in poemLines:
@@ -416,5 +421,13 @@ def add_tag(poem_id, tag_name, cursor):
     cursor.execute(INSERT_TAG, (poem_id, tag_name))
 
 
+def _debug_single(url):
+    soup = soup_for(url)
+    poem = find_poem(soup, url)
+    if poem:
+        print(poem.full_text())
+
+
 if __name__ == '__main__':
+    # _debug_single('https://www.poetryfoundation.org/poetrymagazine/poems/56625/visitors-from-abroad')
     main()

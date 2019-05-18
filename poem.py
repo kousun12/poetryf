@@ -21,4 +21,4 @@ class Poem(object):
         self.text = text
 
     def full_text(self):
-        return self.text or self.lines.join("\n")
+        return self.text or "\n".join(self.lines)

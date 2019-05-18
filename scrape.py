@@ -47,7 +47,8 @@ def main():
     Main function for running from command line
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--fresh", type=str, help="clear the entire db before scraping")
+    parser.add_argument("--fresh", action="store_true", help="clear the entire db before scraping")
+    parser.add_argument("--batch", action="store_true", help="scrape batch poems by authors in poets.txt")
     parser.add_argument("-c", "--collection", type=str, help="parse a collection")
     parser.add_argument("-t", "--tag", type=str, help="tag to add to this collection")
 
@@ -65,11 +66,11 @@ def main():
             raise Exception("You should tag collections")
         add_poem_collection(args.collection, args.tag, cursor)
     else:
-        poet = input('Enter a poet or RET to read poets.txt: ')
-        if poet:
-            add_poet_poems(poet, cursor)
-        else:
+        if args.batch:
             batch_run(cursor)
+        else:
+            poet = input('Enter a poet or RET to read poets.txt: ')
+            add_poet_poems(poet, cursor)
 
     conn.commit()
     cursor.close()

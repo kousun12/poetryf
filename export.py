@@ -16,10 +16,10 @@ SELECT PM.pid,
 FROM POEMS AS PM
          JOIN POETS AS PT ON PT.PID = PM.poet_id
          JOIN LINES L ON L.pid = PM.pid
-         JOIN TAGS T ON T.pid = PM.pid
-                        """
+         LEFT OUTER JOIN TAGS T ON T.pid = PM.pid
+WHERE PM.pid > 0"""
 
-GRP_PID = """GROUP BY PM.pid"""
+GRP_PID = """\nGROUP BY PM.pid"""
 
 SELECT_ALL = SELECT_POEMS_BASE + GRP_PID + ";"
 
@@ -29,7 +29,7 @@ def main():
     Main function for running from command line
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("--all", type=str, help="parse a collection", action="store_true")
+    parser.add_argument("--all", help="parse a collection", action="store_true")
     parser.add_argument("-t", "--tag", type=str, help="tags to search over, comma-separated")
     parser.add_argument("-a", "--author", type=str, help="authors to search over, comma-separated")
     parser.add_argument("-o", "--out", type=str, help="output name", default="output.txt")
@@ -59,7 +59,7 @@ def poems_from(result):
         poem = Poem(title=title, author=author_str, text=text, translator=translator, source=source, url=url)
         poems.append(poem)
 
-    print(f'total {len(poems)} poems')
+    print(f'{len(poems)} poems')
     return poems
 
 
@@ -71,12 +71,13 @@ def get_poems(author_str=None, tag_str=None):
 
     if author_str:
         authors = filter(None, [f'"{x.strip()}"' for x in author_str.split(',')])
-        statement = f"\nAND PT.poet_name IN ({','.join(authors)})"
+        statement += f"\nAND PT.poet_name IN ({','.join(authors)})"
     if tag_str:
         tags = filter(None, [f'"{x.strip()}"' for x in tag_str.split(',')])
-        statement = f"\nAND T.name in ({','.join(tags)})"
+        statement += f"\nAND T.name in ({','.join(tags)})"
 
     statement += GRP_PID + ";"
+    # print(f'QUERY: {statement}')
     result = cursor.execute(statement)
 
     poems = poems_from(result)
@@ -87,7 +88,7 @@ def get_poems(author_str=None, tag_str=None):
 
 def write_poems(filename, poems):
     f = open(filename, "w")
-    f.write('\n'.join([p.full_text() for p in poems]))
+    f.write('\n\n\n\n\n\n'.join([f'{p.title}\n\n\n\n\n\n{p.full_text()}'for p in poems]))
     f.close()
     print(f'wrote to {filename}')
 

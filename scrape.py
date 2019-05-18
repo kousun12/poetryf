@@ -184,7 +184,7 @@ def find_poem(poem_soup, url):
                                                     'c-txt_attribution',
                                                     'translated by')
             source = find_span_beginning_remove(poem_soup, 'c-txt_note',
-                                                'source:')
+                                                'source:').strip()
             year = None
             if source:
                 year = find_poem_year(source)
@@ -300,7 +300,7 @@ def unescape_text(text, left=False, right=False):
     Unescapes the html text and removes trailing whitespace if right and leading if left
     Returns unescaped text
     """
-    text = unescape(text)
+    text = unescape(text.replace(u'\xa0', u' '))
     if left:
         text = text.lstrip(WHITESPACE)
     if right:

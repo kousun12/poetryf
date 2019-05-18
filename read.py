@@ -6,10 +6,10 @@ from __future__ import print_function
 import sqlite3
 from sql_util import DATABASE
 
-from .poem import Poem
+from poem import Poem
 
-MAX_LINES = 20
-LINE_LENGTH = 32
+MAX_LINES = 10000
+LINE_LENGTH = 256
 
 SELECT_POEM_LINES = """SELECT poem_line FROM LINES WHERE pid = ?;"""
 SELECT_POEMS_BASE = """SELECT PM.pid, PM.poem_name, PT.poet_name, PM.translator, PM.year,
@@ -21,8 +21,9 @@ GROUP_BY_CHAR_COUNT = """GROUP BY PM.pid HAVING sum(LENGTH(L.poem_line)) <= ?"""
 SELECT_POEMS_POET_BASE = SELECT_POEMS_BASE + """AND PT.poet_name = ? """
 ORDER_RANDOM = """ORDER BY RANDOM() LIMIT 1"""
 
-SELECT_RANDOM_POEM = SELECT_POEMS_BASE + GROUP_BY_CHAR_COUNT +  ORDER_RANDOM + ";"
+SELECT_RANDOM_POEM = SELECT_POEMS_BASE + GROUP_BY_CHAR_COUNT + ORDER_RANDOM + ";"
 SELECT_RANDOM_POEM_POET = SELECT_POEMS_POET_BASE + GROUP_BY_CHAR_COUNT + ORDER_RANDOM + ";"
+
 
 def get_random_poem(author=None, max_lines=MAX_LINES, line_length=LINE_LENGTH):
     """
@@ -52,5 +53,13 @@ def get_random_poem(author=None, max_lines=MAX_LINES, line_length=LINE_LENGTH):
     cursor.close()
     conn.commit()
 
-    return Poem(title=title, author=author, lines=lines, translator=translator,
+    poem = Poem(title=title, author=author, lines=lines, translator=translator,
                 year=year, source=source, url=url)
+    print(poem.title + "\n")
+
+    [print(l) for l in poem.lines]
+    return poem
+
+
+if __name__ == '__main__':
+    get_random_poem('Jorie Graham')

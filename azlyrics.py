@@ -58,9 +58,9 @@ def scrape_albums(artist, cursor):
     count = 0
     artist_name = artist.get_song_page_name()
     for album in artist.get_album_infos():
-        album = Album('cohen', album)
+        album = Album(artist.artist_name, album)
         res.append(album)
-        print(album.title)
+        print(f'{album.title} [{len(album.songs)}]')
         for song_name in album.songs:
             count = count + 1
             if _song_exists(song_name, artist_name, cursor):

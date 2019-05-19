@@ -43,7 +43,8 @@ def main():
 
 def scrape_artists(artists, cursor):
     for artist in artists:
-        scrape_albums(artist.get_album_infos(), artist, cursor)
+        albums, total = scrape_albums(artist, cursor)
+        print(f'☛ {artist.artist_name} ✯ {len(albums)} albums ✯ {len(total)} songs')
 
 
 def _song_exists(name, cursor):
@@ -51,16 +52,21 @@ def _song_exists(name, cursor):
     return cursor.execute(statement, (name,)).fetchall()
 
 
-def scrape_albums(albums, artist, cursor):
-    for album in albums:
+def scrape_albums(artist, cursor):
+    res = []
+    count = 0
+    for album in artist.get_album_infos():
         album = Album('cohen', album)
+        res.append(album)
         print(album.title)
         for song_name in album.songs:
+            count = count + 1
             if not _song_exists(song_name, cursor):
                 song = Song(artist.get_song_page_name(), song_name)
                 _insert_song(song, album, cursor)
             else:
                 print(f' ↛ {song_name} [skip]')
+    return res, count
 
 
 def _insert_song(s, album, cursor):
@@ -95,9 +101,9 @@ def write_to(filename, songs):
     f.write('\n\n\n\n\n\n'.join([f'{s.song_name}\n\n\n\n\n\n{s.lyrics}' for s in songs]))
     f.close()
     if overwrote:
-        print(f'overwrote {filename}')
+        print(f'✍︎ overwrote {filename} [{len(songs)} songs]')
     else:
-        print(f'wrote to {filename}')
+        print(f'✍︎ wrote to {filename} [{len(songs)} songs]')
 
 
 def songs_from_db(cursor):
@@ -111,7 +117,6 @@ def songs_from_db(cursor):
         song = Song(artist, name, lyrics)
         songs.append(song)
 
-    print(f'✓ {len(songs)} songs')
     return songs
 
 

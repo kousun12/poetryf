@@ -86,6 +86,7 @@ class Album(Artist):
         self.artist_name = artist_name
         self.songs = self.get_album_songs()
 
+
     def get_album_songs(self):
         songs = []
         soup = BeautifulSoup(self.get_song_list_page().read(), 'lxml')

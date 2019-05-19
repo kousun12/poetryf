@@ -5,6 +5,7 @@ import argparse
 
 ARTISTS = [
     # Artist('cohen', 'leonardcohen'),
+    Artist('dylan', 'bobdylan'),
 ]
 
 
@@ -44,28 +45,29 @@ def main():
 def scrape_artists(artists, cursor):
     for artist in artists:
         albums, total = scrape_albums(artist, cursor)
-        print(f'☛ {artist.artist_name} ✯ {len(albums)} albums ✯ {len(total)} songs')
+        print(f'☛ {artist.artist_name} ✯ {len(albums)} albums ✯ {total} songs')
 
 
-def _song_exists(name, cursor):
-    statement = """SELECT id FROM songs WHERE name = ?;"""
-    return cursor.execute(statement, (name,)).fetchall()
+def _song_exists(name, artist, cursor):
+    statement = """SELECT id FROM songs WHERE name = ? AND artist = ?;"""
+    return cursor.execute(statement, (name, artist)).fetchall()
 
 
 def scrape_albums(artist, cursor):
     res = []
     count = 0
+    artist_name = artist.get_song_page_name()
     for album in artist.get_album_infos():
         album = Album('cohen', album)
         res.append(album)
         print(album.title)
         for song_name in album.songs:
             count = count + 1
-            if not _song_exists(song_name, cursor):
-                song = Song(artist.get_song_page_name(), song_name)
-                _insert_song(song, album, cursor)
-            else:
+            if _song_exists(song_name, artist_name, cursor):
                 print(f' ↛ {song_name} [skip]')
+            else:
+                song = Song(artist_name, song_name)
+                _insert_song(song, album, cursor)
     return res, count
 
 

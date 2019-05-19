@@ -4,20 +4,22 @@ from songs import Song, Artist, Album
 import argparse
 
 ARTISTS = [
-    Artist('cohen', 'leonardcohen'),
+    # Artist('cohen', 'leonardcohen'),
 ]
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fresh", action="store_true", help="clear the entire db before scraping")
+    parser.add_argument("-w", "--write", action="store_true", help="write database to output txt file")
     parser.add_argument("-d", "--database", type=str, help="database name", default='songs.db')
+    parser.add_argument("-o", "--out", type=str, help="out file", default='out/songs.txt')
 
     args = parser.parse_args()
     db_file = args.database
 
     if args.fresh and os.path.exists(db_file):
-        conn = sqlite3.connect(db_file, isolation_level=None)  # auto commit
+        conn = sqlite3.connect(db_file, isolation_level=None)
         cursor = conn.cursor()
         drop_tables(cursor)
         os.remove(db_file)
@@ -25,11 +27,15 @@ def main():
         conn.commit()
         cursor.close()
 
-    conn = sqlite3.connect(db_file, isolation_level=None)  # auto commit
+    conn = sqlite3.connect(db_file, isolation_level=None)
     cursor = conn.cursor()
     create_tables(cursor)
 
     scrape_artists(ARTISTS, cursor)
+
+    if args.write:
+        songs = songs_from_db(cursor)
+        write_to(args.out, songs)
 
     conn.commit()
     cursor.close()
@@ -78,6 +84,35 @@ def create_tables(cursor):
 def drop_tables(cursor):
     for table in ['SONGS']:
         cursor.execute(f'DROP TABLE IF EXISTS {table}')
+
+
+def write_to(filename, songs):
+    overwrote = False
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    f = open(filename, "w")
+    f.write('\n\n\n\n\n\n'.join([f'{s.song_name}\n\n\n\n\n\n{s.lyrics}' for s in songs]))
+    f.close()
+    if overwrote:
+        print(f'overwrote {filename}')
+    else:
+        print(f'wrote to {filename}')
+
+
+def songs_from_db(cursor):
+    statement = "SELECT name, artist, lyrics from songs;"
+    results = cursor.execute(statement).fetchall()
+    if not results:
+        print("query for songs failed")
+        return None
+    songs = []
+    for name, artist, lyrics in results:
+        song = Song(artist, name, lyrics)
+        songs.append(song)
+
+    print(f'✓ {len(songs)} songs')
+    return songs
 
 
 if __name__ == '__main__':

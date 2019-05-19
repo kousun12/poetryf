@@ -110,15 +110,11 @@ class Album(Artist):
 
 class Song(MakeRequest):
 
-    def __init__(self, artist_name, song_name):
-        """
-
-        :rtype: object
-        """
+    def __init__(self, artist_name, song_name, lyrics=None):
         super().__init__()
         self.song_name = song_name
         self.artist_name = artist_name
-        self.lines = self.get_lines()
+        self.lines = lyrics.split('\n') if lyrics else self.get_lines()
         self.lyrics = '\n'.join(self.lines)
 
     def get_lines(self):

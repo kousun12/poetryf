@@ -1,5 +1,6 @@
 import random
 import re
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -62,8 +63,7 @@ class Artist(MakeRequest):
         return album_infos
 
     def parse_album_info(self, raw_album_info):
-        album_info = {}
-        album_info['raw'] = raw_album_info
+        album_info = {'raw': raw_album_info}
         if raw_album_info == 'other songs:':
             return {'type': None, 'year': None, 'title': 'other songs', 'raw': raw_album_info}
         album_info_split = raw_album_info.split(':', 1)
@@ -122,7 +122,7 @@ class Song(MakeRequest):
         self.lyrics = '\n'.join(self.lines)
 
     def get_lines(self):
-        # time.sleep(10)
+        time.sleep(10)
         print(f' ⇅ {self.song_name}')
         soup = BeautifulSoup(self.get_song_page(), 'lxml')
         page_lyric = soup.find_all("div", limit=22)[-1]  # lyrics start on 22nd div

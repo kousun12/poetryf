@@ -50,7 +50,7 @@ def scrape_albums(albums, artist, cursor):
         album = Album('cohen', album)
         print(album.title)
         for song_name in album.songs:
-            if not _song_exists(song_name):
+            if not _song_exists(song_name, cursor):
                 song = Song(artist.get_song_page_name(), song_name)
                 _insert_song(song, album, cursor)
             else:

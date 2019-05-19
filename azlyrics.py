@@ -42,7 +42,7 @@ def scrape_artists(artists, cursor):
 
 def _song_exists(name, cursor):
     statement = """SELECT id FROM songs WHERE name = ?;"""
-    return cursor.execute(statement, name).fetchall()
+    return cursor.execute(statement, (name,)).fetchall()
 
 
 def scrape_albums(albums, artist, cursor):

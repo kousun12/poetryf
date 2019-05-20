@@ -3,8 +3,9 @@ import sqlite3
 from songs import Song, Artist, Album
 import argparse
 
+TEXT_END = '<|endoftext|>'
 ARTISTS = [
-    # Artist('cohen', 'leonardcohen'),
+    Artist('cohen', 'leonardcohen'),
     Artist('dylan', 'bobdylan'),
 ]
 
@@ -12,6 +13,7 @@ ARTISTS = [
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fresh", action="store_true", help="clear the entire db before scraping")
+    parser.add_argument("--skip_scrape", action="store_true", help="don't scrape")
     parser.add_argument("-w", "--write", action="store_true", help="write database to output txt file")
     parser.add_argument("-d", "--database", type=str, help="database name", default='songs.db')
     parser.add_argument("-o", "--out", type=str, help="out file", default='out/songs.txt')
@@ -32,7 +34,8 @@ def main():
     cursor = conn.cursor()
     create_tables(cursor)
 
-    scrape_artists(ARTISTS, cursor)
+    if not args.skip_scrape:
+        scrape_artists(ARTISTS, cursor)
 
     if args.write:
         songs = songs_from_db(cursor)
@@ -100,7 +103,7 @@ def write_to(filename, songs):
         os.remove(filename)
 
     f = open(filename, "w")
-    f.write('\n\n\n\n\n\n'.join([f'{s.song_name}\n\n\n\n\n\n{s.lyrics}' for s in songs]))
+    f.write(''.join([f'{s.song_name}\n\n\n{s.lyrics}\n\n\n{TEXT_END}' for s in songs]))
     f.close()
     if overwrote:
         print(f'✍︎ overwrote {filename} [{len(songs)} songs]')

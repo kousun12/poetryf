@@ -58,12 +58,12 @@ target/
 
 *~
 
+songs.db
 poems.db
 
 
 include/
 bin/
 .idea/workspace.xml
-out/
 
 .DS_Store

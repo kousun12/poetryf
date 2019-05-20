@@ -96,7 +96,7 @@ def write_poems(filename, poems):
         os.remove(filename)
         print(f'deleted existing out @ {filename}')
     f = open(filename, "w")
-    f.write(''.join([f'{p.title}\n\n\n{p.full_text()}\n\n\n<|endoftext|>' for p in poems]))
+    f.write('\n'.join([f'{p.title}\n\n\n{p.full_text()}\n\n\n<|endoftext|>' for p in poems]))
     f.close()
     print(f'wrote to {filename}')
 

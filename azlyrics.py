@@ -103,7 +103,7 @@ def write_to(filename, songs):
         os.remove(filename)
 
     f = open(filename, "w")
-    f.write(''.join([f'{s.song_name}\n\n\n{s.lyrics}\n\n\n{TEXT_END}' for s in songs]))
+    f.write('\n'.join([f'{s.song_name}\n\n\n{s.lyrics}\n\n\n{TEXT_END}' for s in songs]))
     f.close()
     if overwrote:
         print(f'✍︎ overwrote {filename} [{len(songs)} songs]')

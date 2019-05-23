@@ -27,7 +27,6 @@ Jim Carroll
 Anne Waldman
 David Antin
 Joseph Ceravolo
-Luljeta Lleshanaku
 Greg Delanty
 Lucie Brock Broido
 Marcus Wicker
@@ -143,4 +142,203 @@ Farnoosh Fathi
 J Michael Martinez
 Amit Majmudar
 Sun Yung Shin
+Luljeta Lleshanaku
 Michael Dickman
+Meena Alexander
+Peter Oresick
+Martin Espada
+Lucie Brock Broido
+Dana Levin
+Gregory Pardlo
+Jennifer Michael Hecht
+Nick Flynn
+Sy Hoahwah
+Julien Poirier
+Mary Jo Salter
+Barbara Jane Reyes
+Priscilla Lee
+Chris Forhan
+Nathalie Handal
+Kim Addonizio
+Bob Hicok
+Brian Culhane
+Dan Beachy Quick
+Wendy Videlock
+Joshua Beckman
+Peter Cole
+Robin Robertson
+Joyce Sidman
+Jeffrey Harrison
+April Lindner
+Molly Fisk
+T Zachary Cotler
+Marjorie Agosín
+Tina Chang
+Graham Foust
+Fady Joudah
+Maurice Kilwein Guevara
+Eduardo Chirinos
+Rafael Campo
+Ofelia Zepeda
+Alice Fulton
+Lisa Olstein
+Jennifer Grotz
+Harmony Holiday
+James Langlas
+Alberto Ríos
+Campbell McGrath
+Bruce Bond
+Michael Symmons Roberts
+Monica Ferrell
+Edwin Torres
+Maurice Manning
+Cedar Sigo
+Susan M. Schultz
+David Mason
+Wilmer Mills
+James Galvin
+Kenn Nesbitt
+Reina María Rodríguez
+Roberto Harrison
+John Brehm
+Cornelius Eady
+Leigh Stein
+Ernest Hilbert
+David Rivard
+Rick Barot
+Andrew Joron
+Brooklyn Copeland
+Michael Chitwood
+Micah Ballard
+Camille Guthrie
+Joanie Mackowski
+Dora Malech
+Roxane Beth Johnson
+Matthew Rohrer
+Ellen Hinsey
+Jill Osier
+Linda Parsons Marion
+Zachary Schomburg
+Lisa Jarnot
+Dean Young
+Steven Cramer
+Karyna McGlynn
+Susan Wheeler
+Cynthia Huntington
+Jacob Polley
+Fiona Sampson
+Lance Larsen
+Ray Gonzalez
+Natasha Trethewey
+Erika Meitner
+Forrest Gander
+Saskia Hamilton
+Dunya Mikhail
+Mary Karr
+Nate Pritts
+Garrett Hongo
+Melissa Kwasny
+Jennifer OGrady
+Michael Collier
+Ghassan Zaqtan
+Gordon Henry
+Rita Dove
+Peter Gizzi
+Cynthia Zarin
+George Bradley
+Angela Jackson
+Ravi Shankar
+Stephen Edgar
+Jennifer Moxley
+David Biespiel
+Kevin Stein
+Eliza Griswold
+Reginald Shepherd
+Luke Davies
+Peter Boyle
+Judith Beveridge
+Timothy Liu
+Anselm Berrigan
+Paul Foster Johnson
+Allison Seay
+Suzanne Gardinier
+Timothy Murphy
+Rita Ann Higgins
+Lynda Hull
+Michael Donaghy
+Sophie Cabot Black
+Olivia Clare
+Suzanne Buffam
+Robert Wrigley
+Meghan O'Rourke
+Andrew Hudgins
+Dorianne Laux
+Peter Balakian
+Julia Kasdorf
+Blas Manuel De Luna
+Jennifer Tonge
+Kristine O'Connell George
+Mark Jarman
+Gabriel Spera
+Paula Tatarunis
+Mark Doty
+George Albon
+LeAnne Howe
+James Thomas Stevens
+Marilyn Chin
+Joel Brouwer
+kari edwards
+Richard Katrovas
+Myung Mi Kim
+Peter Campion
+Sabrina Orah Mark
+Joseph Campana
+Diane Thiel
+Amy Beeder
+Stacie Cassarino
+Thylias Moss
+Harry Clifton
+Ron Rash
+Greg Williamson
+Karl Kirchwey
+Connie Wanek
+James Kimbrell
+David Gewanter
+Jimmy Santiago Baca
+Susan Stewart
+Peter Pereira
+David Wojahn
+Emily Wilson
+Terry Wolverton
+Mark Wunderlich
+Rachel Zucker
+Linh Dinh
+Ann Townsend
+Matthew Brenneman
+Garry Gottfriedson
+Juliana Spahr
+Esther Belin
+Sherman Alexie
+John Kinsella
+Hershman John
+Robin Ekiss
+Adam Kirsch
+Gary Soto
+Dionisio D Martínez
+Durs Grunbein
+Adrienne Su
+Paul Killebrew
+James Lasdun
+Raul Zurita
+Cathy Song
+Ha Jin
+Devin Johnston
+Rynn Williams
+Louise Erdrich
+Li Young Lee
+Richard Jones
+Olena Kalytiak Davis
+Brad Leithauser
+Harryette Mullen
+David Mura
+Glyn Maxwell

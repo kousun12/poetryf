@@ -83,7 +83,7 @@ def main():
             add_poem_collection(col_id, args.tag, cursor)
     else:
         if args.batch:
-            batch_run(cursor)
+            batch_run(cursor, args.start_with)
         else:
             poet = input('enter poet name')
             add_poet_poems(poet, cursor)
@@ -92,18 +92,23 @@ def main():
     cursor.close()
 
 
-def batch_run(cursor, start_with):
+def batch_run(cursor, start_with=None):
     """
     Batch opens poets from in POETS adds their poems to cursor
     """
     ready = start_with is None
     with open(POETS, "r") as poet_file:
         poets = poet_file.readlines()
+        if not ready:
+            print(f'skipping until {start_with}')
         for poet in poets:
-            if not ready and poet == start_with:
+            if not ready and re.search(rf'{start_with}', poet, re.IGNORECASE):
                 ready = True
             if ready and not poet.startswith('#'):
                 add_poet_poems(poet, cursor)
+            else:
+                print(f'skip {poet}')
+
 
 
 def batch_collections(cursor):
@@ -155,7 +160,6 @@ def add_poet_poems(poet_name, cursor):
         soup = soup_for(url)
         poem = find_poem(soup, url)
         if poem:
-            print("done")
             write_poem(poem, poet_id, cursor)
 
 
@@ -373,6 +377,7 @@ def write_poem(poem, poet_id, cursor, tag_csv=None):
         tags = filter(None, [f'"{x.strip()}"' for x in tag_csv.split(',')])
         for name in tags:
             add_tag(poem_id, name, cursor)
+    print(f'wrote {poem.title}\n')
 
 
 def poet_exists(poet_name, cursor):

@@ -98,13 +98,15 @@ def drop_tables(cursor):
         cursor.execute(f'DROP TABLE IF EXISTS {table}')
 
 
-def write_to(filename, songs):
+def write_to(filename, songs, shuffle=True):
     overwrote = False
     if os.path.exists(filename):
         os.remove(filename)
 
     f = open(filename, "w")
-    f.write('\n'.join([f'{s.song_name}\n\n\n{s.lyrics}\n\n\n{TEXT_END}' for s in random.shuffle(songs)]))
+    if shuffle:
+        random.shuffle(songs)
+    f.write('\n'.join([f'{s.song_name}\n\n\n{s.lyrics}\n\n\n{TEXT_END}' for s in songs]))
     f.close()
     if overwrote:
         print(f'✍︎ overwrote {filename} [{len(songs)} songs]')

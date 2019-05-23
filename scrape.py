@@ -253,13 +253,13 @@ def find_poet_page(poet):
 
 
 def poem_page_from(url):
-    print("opening " + url)
+    print("⇅ " + url)
     try:
         req = urllib.request.Request(url, headers={'User-Agent': "Google Chrome"})
         page = urllib.request.urlopen(req)
         soup = BeautifulSoup(page.read(), "html.parser")
 
-        print("opened " + url)
+        print("✓ " + url + '\n')
         return soup
     except urllib.error.HTTPError as err:
         print("Page not found, error " + str(err))

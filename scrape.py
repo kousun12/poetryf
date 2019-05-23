@@ -53,6 +53,7 @@ def main():
     parser.add_argument("--full_run", action="store_true", help="delete all and batch collections and poets")
     parser.add_argument("-c", "--collection", action="store_true", help="parse a collection")
     parser.add_argument("-t", "--tag", type=str, help="tag(s) to add to this collection, csv")
+    parser.add_argument("-s", "--start_with", type=str, help="when batched, start after this poet")
 
     args = parser.parse_args()
 
@@ -70,7 +71,7 @@ def main():
     create_tables(cursor)
 
     if args.full_run:
-        batch_run(cursor)
+        batch_run(cursor, args.start_with)
         batch_collections(cursor)
     elif args.collection:
         if args.batch:
@@ -91,14 +92,17 @@ def main():
     cursor.close()
 
 
-def batch_run(cursor):
+def batch_run(cursor, start_with):
     """
     Batch opens poets from in POETS adds their poems to cursor
     """
+    ready = start_with is None
     with open(POETS, "r") as poet_file:
         poets = poet_file.readlines()
         for poet in poets:
-            if not poet.startswith('#'):
+            if not ready and poet == start_with:
+                ready = True
+            if ready and not poet.startswith('#'):
                 add_poet_poems(poet, cursor)
 
 
@@ -184,12 +188,16 @@ def add_poem_collection(collection_id, tag_csv, cursor):
             write_poem(poem, poet_id, cursor, tag_csv)
 
 
-### Begin scraping functions
-
 def soup_for(poem_url):
     req = urllib.request.Request(poem_url, headers={'User-Agent': "Google Chrome"})
     page = urllib.request.urlopen(req)
-    return BeautifulSoup(page.read(), "html.parser")
+    try:
+        return BeautifulSoup(page.read(), "html.parser")
+    except urllib.error.HTTPError as err:
+        print("Page not found, error " + str(err))
+    except urllib.error.URLError as err:
+        print("Page not found, error " + str(err))
+    return None
 
 
 def _author_from(soup):
@@ -352,14 +360,10 @@ def drop_tables(cursor):
 
 
 def write_poem(poem, poet_id, cursor, tag_csv=None):
-    """
-    Writes poem to cursor
-    """
     res = poem_exists(poem.title, poet_id, cursor)
     if res:
         print("poem already exists")
         return
-
     poem_id = create_poem(poem, poet_id, cursor)
     for lid in range(len(poem.lines)):
         line = poem.lines[lid]

@@ -110,7 +110,6 @@ def batch_run(cursor, start_with=None):
                 print(f'skip {poet}')
 
 
-
 def batch_collections(cursor):
     with open(COLLECTIONS, "r") as cols_file:
         cols = cols_file.readlines()
@@ -130,7 +129,7 @@ def poet_name_to_dashes(name):
 def clean_poet_name(name):
     poet = name.rstrip('\n')
     poet_dashes = poet_name_to_dashes(poet)
-    print("poet is " + poet_dashes)
+    print(f"{'=' * 80}\n\n☛ {poet_dashes}\n\n")
     return poet_dashes
 
 
@@ -193,9 +192,9 @@ def add_poem_collection(collection_id, tag_csv, cursor):
 
 
 def soup_for(poem_url):
-    req = urllib.request.Request(poem_url, headers={'User-Agent': "Google Chrome"})
-    page = urllib.request.urlopen(req)
     try:
+        req = urllib.request.Request(poem_url, headers={'User-Agent': "Google Chrome"})
+        page = urllib.request.urlopen(req)
         return BeautifulSoup(page.read(), "html.parser")
     except urllib.error.HTTPError as err:
         print("Page not found, error " + str(err))
@@ -209,16 +208,13 @@ def _author_from(soup):
 
 
 def find_poem(poem_soup, url):
-    """
-    Given a poem url, attempts to parse the page. If successful, returns a
-    Poem
-    """
+    if not poem_soup:
+        return None
     try:
         poem_title = poem_soup.find('h1')
-
         if poem_title:
             title = unescape_text(poem_title.text, left=True, right=True)
-            print("reading " + title)
+            print("⇅ " + title)
 
             lines = find_poem_lines(poem_soup)
             translator = find_span_beginning_remove(poem_soup,
@@ -230,7 +226,6 @@ def find_poem(poem_soup, url):
                 year = find_poem_year(source)
             return Poem(title=title, lines=lines, translator=translator,
                         source=source, year=year, url=url)
-
     except urllib.error.HTTPError as err:
         print("Poem not found, error " + str(err))
     except urllib.error.URLError as err:
@@ -366,7 +361,7 @@ def drop_tables(cursor):
 def write_poem(poem, poet_id, cursor, tag_csv=None):
     res = poem_exists(poem.title, poet_id, cursor)
     if res:
-        print("poem already exists")
+        print(f"↛ {poem.title} [exists]\n")
         return
     poem_id = create_poem(poem, poet_id, cursor)
     for lid in range(len(poem.lines)):
@@ -377,7 +372,7 @@ def write_poem(poem, poet_id, cursor, tag_csv=None):
         tags = filter(None, [f'"{x.strip()}"' for x in tag_csv.split(',')])
         for name in tags:
             add_tag(poem_id, name, cursor)
-    print(f'wrote {poem.title}\n')
+    print(f'✓ {poem.title}\n')
 
 
 def poet_exists(poet_name, cursor):

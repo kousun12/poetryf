@@ -91,13 +91,16 @@ def get_poems(author_str=None, tag_str=None, only_pids=None):
     conn.commit()
     return poems
 
+def text_entry_for(poem):
+    return f'<|title|>{poem.title}<|title|>\n\n\n{poem.full_text()}\n\n<|endoftext|>'
+
 
 def write_poems(filename, poems):
     if os.path.exists(filename):
         os.remove(filename)
         print(f'deleted existing out @ {filename}')
     f = open(filename, "w")
-    f.write('\n'.join([f'{p.title}\n\n\n{p.full_text()}\n\n\n<|endoftext|>' for p in random.shuffle(poems)]))
+    f.write('\n'.join([f'{p.title}\n\n\n{p.full_text()}\n\n<|endoftext|>' for p in random.shuffle(poems)]))
     f.close()
     print(f'wrote to {filename}')
 
